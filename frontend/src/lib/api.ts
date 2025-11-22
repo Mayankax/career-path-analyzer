@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://career-path-backend-uped.onrender.com", // backend URL
+  baseURL: import.meta.env.VITE_API_URL
 });
 
 export const getSkillGap = (payload: any) =>
