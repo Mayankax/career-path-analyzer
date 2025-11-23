@@ -11,6 +11,12 @@ const router = Router();
 
 const normalize = (text: string) => text.trim().toLowerCase();
 
+// Create a lowercase lookup map from roles.json
+const normalizedRoles: Record<string, string[]> = {};
+for (const key of Object.keys(rolesJson)) {
+  normalizedRoles[normalize(key)] = rolesJson[key]!;
+}
+
 // Split skills into 3 phases
 function splitIntoPhases(skills: string[]): [string[], string[], string[]] {
   const chunk = Math.ceil(skills.length / 3);
@@ -26,16 +32,6 @@ function skillMatch(skill: string, userSkills: string[]) {
   return userSkills.some((s) => normalize(s) === normalize(skill));
 }
 
-// Resolve role dynamically
-function getRoleSkills(role: string, roles: RolesData): string[] | null {
-  if (roles[role]) return roles[role];
-
-  const replaced = role.replace(/developer/i, "Developer");
-  if (roles[replaced]) return roles[replaced];
-
-  return null;
-}
-
 router.post("/", (req, res) => {
   const { targetRole, currentSkills } = req.body;
 
@@ -45,7 +41,11 @@ router.post("/", (req, res) => {
     });
   }
 
-  const allSkills = getRoleSkills(targetRole, rolesJson);
+  // Normalize user input role
+  const roleKey = normalize(targetRole);
+
+  // Find matching role in lowercase map
+  const allSkills = normalizedRoles[roleKey];
 
   if (!allSkills) {
     return res.status(404).json({
@@ -57,13 +57,7 @@ router.post("/", (req, res) => {
   // Split into phases
   const [phase1, phase2, phase3] = splitIntoPhases(allSkills);
 
-  // Explicit typing removes "p.items possibly undefined" error
-  type Phase = {
-    phase: string;
-    items: string[];
-  };
-
-  const phases: Phase[] = [
+  const phases = [
     { phase: "Phase 1 (1–2 months)", items: phase1 },
     { phase: "Phase 2 (1–2 months)", items: phase2 },
     { phase: "Phase 3 (1–2 months)", items: phase3 },
