@@ -1,10 +1,23 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { motion } from "framer-motion";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { motion } from "framer-motion";
 import { getSkillGap, getRoadmap, getHackerNews } from "@/lib/api";
+import {
+  Brain,
+  Map,
+  Newspaper,
+  CheckCircle,
+  XCircle,
+  Rocket,
+} from "lucide-react";
 
 export default function Dashboard() {
   const location = useLocation();
@@ -30,127 +43,203 @@ export default function Dashboard() {
 
   return (
     <motion.div
-      className="min-h-screen bg-gray-100 p-6 space-y-8"
+      className="min-h-screen bg-gradient-to-b from-indigo-50 to-white p-6 md:p-10 space-y-10"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.4 }}
+      transition={{ duration: 0.6 }}
     >
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Career Dashboard</h1>
-        <p className="text-gray-600 mt-1">
-          Target Role: <span className="font-semibold">{targetRole}</span>
+      {/* Page Header */}
+      <motion.div
+        initial={{ y: -10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <h1 className="text-4xl font-bold text-gray-900 flex items-center gap-3">
+          <Rocket className="text-indigo-600" /> Career Dashboard
+        </h1>
+        <p className="text-gray-600 mt-2 text-lg">
+          Target Role:{" "}
+          <span className="font-semibold text-indigo-700">{targetRole}</span>
         </p>
-      </div>
+      </motion.div>
 
-      {/* TOP GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Top Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Skill Gap Card */}
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
+          <Card className="border border-indigo-100 shadow-lg rounded-2xl hover:shadow-indigo-100 transition-all duration-300 bg-white">
+            <CardHeader>
+              <CardTitle className="text-xl flex items-center gap-2 text-indigo-700">
+                <Brain className="w-5 h-5" /> Skill Gap Analysis
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {!skillGap ? (
+                <div className="space-y-3">
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
+                  <Skeleton className="h-4 w-1/3" />
+                </div>
+              ) : (
+                <div
+                  className="max-h-[350px] overflow-y-auto pr-2
+                              scrollbar-thin scrollbar-thumb-indigo-300 
+                              scrollbar-track-indigo-100 rounded-lg space-y-6"
+                >
+                  {/* Matched Skills */}
+                  <div>
+                    <p className="font-semibold text-gray-800 flex items-center gap-2">
+                      <CheckCircle className="text-green-600 w-5 h-5" />
+                      Matched Skills
+                    </p>
 
-        {/* Skill Gap */}
-        <Card className="shadow-md border rounded-xl bg-white">
-          <CardHeader>
-            <CardTitle className="text-xl">Skill Gap Analysis</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {!skillGap ? (
-              <div className="space-y-3">
-                <Skeleton className="h-4 w-3/4" />
-                <Skeleton className="h-4 w-1/2" />
-                <Skeleton className="h-4 w-1/3" />
-              </div>
-            ) : (
-              <div>
-                <p className="font-semibold">Matched Skills:</p>
-                <ul className="list-disc ml-6 text-green-600">
-                  {skillGap.matchedSkills.map((s: string) => (
-                    <li key={s}>{s}</li>
-                  ))}
-                </ul>
-
-                <p className="font-semibold mt-4">Missing Skills:</p>
-                <ul className="list-disc ml-6 text-red-600">
-                  {skillGap.missingSkills.map((s: string) => (
-                    <li key={s}>{s}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Roadmap */}
-        <Card className="shadow-md border rounded-xl bg-white">
-          <CardHeader>
-            <CardTitle className="text-xl">Career Roadmap</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {!roadmap ? (
-              <div className="space-y-3">
-                <Skeleton className="h-4 w-2/3" />
-                <Skeleton className="h-4 w-1/2" />
-                <Skeleton className="h-4 w-1/3" />
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {roadmap.map((phase: any, i: number) => (
-                  <div key={i}>
-                    <p className="font-semibold">{phase.phase}</p>
-                    <ul className="list-disc ml-6 text-gray-700">
-                      {phase.items.map((item: string) => (
-                        <li key={item}>{item}</li>
-                      ))}
+                    <ul className="list-disc ml-6 mt-2 text-green-600 space-y-1">
+                      {skillGap.matchedSkills.length ? (
+                        skillGap.matchedSkills.map((s: string) => (
+                          <li key={s}>{s}</li>
+                        ))
+                      ) : (
+                        <li className="text-gray-400 italic">
+                          No skills matched yet.
+                        </li>
+                      )}
                     </ul>
                   </div>
-                ))}
+
+                  {/* Missing Skills */}
+                  <div>
+                    <p className="font-semibold text-gray-800 flex items-center gap-2">
+                      <XCircle className="text-red-500 w-5 h-5" />
+                      Missing Skills
+                    </p>
+
+                    <ul className="list-disc ml-6 mt-2 text-red-600 space-y-1">
+                      {skillGap.missingSkills.length ? (
+                        skillGap.missingSkills.map((s: string) => (
+                          <li key={s}>{s}</li>
+                        ))
+                      ) : (
+                        <li className="text-gray-400 italic">
+                          You have all the required skills!
+                        </li>
+                      )}
+                    </ul>
+                  </div>
+                </div>
+              )}
+
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Roadmap Card */}
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          <Card className="border border-indigo-100 shadow-lg rounded-2xl hover:shadow-indigo-100 transition-all duration-300 bg-white">
+            <CardHeader>
+              <CardTitle className="text-xl flex items-center gap-2 text-indigo-700">
+                <Map className="w-5 h-5" /> Career Roadmap
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {!roadmap ? (
+                <div className="space-y-3">
+                  <Skeleton className="h-4 w-2/3" />
+                  <Skeleton className="h-4 w-1/2" />
+                  <Skeleton className="h-4 w-1/3" />
+                </div>
+              ) : (
+                <div className="space-y-6 max-h-[350px] overflow-y-auto pr-2 
+                                scrollbar-thin scrollbar-thumb-indigo-300 scrollbar-track-indigo-100 rounded-lg">
+                  {roadmap.map((phase: any, i: number) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.1 }}
+                    >
+                      <p className="font-semibold text-indigo-800 text-lg">
+                        {phase.phase}
+                      </p>
+                      <ul className="list-disc ml-6 text-gray-700 space-y-1">
+                        {phase.items.length ? (
+                          phase.items.map((item: string) => <li key={item}>{item}</li>)
+                        ) : (
+                          <li className="text-gray-400 italic">
+                            You already know all skills in this phase!
+                          </li>
+                        )}
+                      </ul>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+
+      {/* Divider */}
+      <Separator className="my-8 bg-indigo-200" />
+
+      {/* Hacker News Section */}
+      <motion.div
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.4 }}
+      >
+        <Card className="border border-indigo-100 shadow-md rounded-2xl bg-white">
+          <CardHeader>
+            <CardTitle className="text-xl flex items-center gap-2 text-indigo-700">
+              <Newspaper className="w-5 h-5" /> Latest Tech News
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {!news.length ? (
+              <div className="space-y-2">
+                <Skeleton className="h-5 w-3/4" />
+                <Skeleton className="h-5 w-2/3" />
+                <Skeleton className="h-5 w-1/2" />
               </div>
+            ) : (
+              <ul className="space-y-5">
+                {news.map((n: any) => (
+                  <motion.li
+                    key={n.id}
+                    className="border rounded-xl p-4 hover:bg-indigo-50 transition-all"
+                    whileHover={{ scale: 1.02 }}
+                  >
+                    <a
+                      href={n.url}
+                      target="_blank"
+                      className="font-semibold text-indigo-700 hover:underline"
+                    >
+                      {n.title}
+                    </a>
+                    <p className="text-sm text-gray-700 mt-1">
+                      Score: {n.score} • By: {n.by}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      Type: {n.type || "story"}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {new Date(n.time * 1000).toLocaleString()}
+                    </p>
+                  </motion.li>
+                ))}
+              </ul>
             )}
           </CardContent>
         </Card>
-
-      </div>
-
-      <Separator />
-
-      {/* HackerNews Section */}
-      <Card className="shadow-md border rounded-xl bg-white">
-        <CardHeader>
-          <CardTitle className="text-xl">Latest Tech News</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {!news.length ? (
-            <div className="space-y-2">
-              <Skeleton className="h-5 w-3/4" />
-              <Skeleton className="h-5 w-2/3" />
-              <Skeleton className="h-5 w-1/2" />
-            </div>
-          ) : (
-            <ul className="space-y-4">
-              {news.map((n: any) => (
-                <li key={n.id} className="border-b pb-3">
-                  <a
-                    href={n.url}
-                    target="_blank"
-                    className="font-semibold text-blue-600 hover:underline"
-                  >
-                    {n.title}
-                  </a>
-
-                  <p className="text-sm text-gray-700">
-                    Score: {n.score} • By: {n.by}
-                  </p>
-
-                  <p className="text-sm text-gray-600">
-                    Type: {n.type || "story"}
-                  </p>
-
-                  <p className="text-sm text-gray-500">
-                    {new Date(n.time * 1000).toLocaleString()}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          )}
-        </CardContent>
-      </Card>
+      </motion.div>
     </motion.div>
   );
 }

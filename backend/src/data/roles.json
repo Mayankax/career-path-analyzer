@@ -1,5 +1,120 @@
 {
-  "Frontend Developer": ["HTML", "CSS", "JavaScript", "React", "Git"],
-  "Backend Developer": ["Java", "Spring Boot", "SQL", "APIs", "Git"],
-  "Data Analyst": ["Excel", "SQL", "Python", "Dashboards", "Statistics"]
+  "Frontend Developer": [
+    "HTML",
+    "CSS",
+    "JavaScript",
+    "React",
+    "TypeScript",
+    "Redux",
+    "Tailwind CSS",
+    "Git",
+    "Responsive Design",
+    "API Integration"
+  ],
+
+  "Backend Developer": [
+    "Java",
+    "Spring Boot",
+    "SQL",
+    "APIs",
+    "Git",
+    "Authentication",
+    "Node.js",
+    "Express",
+    "REST",
+    "Docker"
+  ],
+
+  "Full Stack Developer": [
+    "HTML",
+    "CSS",
+    "JavaScript",
+    "React",
+    "Node.js",
+    "Express",
+    "MongoDB",
+    "SQL",
+    "Git",
+    "APIs",
+    "Docker"
+  ],
+
+  "Data Analyst": [
+    "Excel",
+    "SQL",
+    "Python",
+    "Dashboards",
+    "Statistics",
+    "Power BI",
+    "Tableau",
+    "Data Cleaning",
+    "ETL"
+  ],
+
+  "Machine Learning Engineer": [
+    "Python",
+    "NumPy",
+    "Pandas",
+    "Scikit-Learn",
+    "Machine Learning Algorithms",
+    "Deep Learning",
+    "TensorFlow",
+    "PyTorch",
+    "Statistics"
+  ],
+
+  "DevOps Engineer": [
+    "Linux",
+    "CI/CD",
+    "Docker",
+    "Kubernetes",
+    "AWS",
+    "GitHub Actions",
+    "Terraform",
+    "Jenkins",
+    "Networking"
+  ],
+
+  "Cybersecurity Analyst": [
+    "Networking",
+    "Linux",
+    "Vulnerability Scanning",
+    "OWASP",
+    "SIEM Tools",
+    "Firewalls",
+    "Risk Assessment",
+    "Incident Response"
+  ],
+
+  "Cloud Engineer": [
+    "AWS",
+    "Azure",
+    "Google Cloud",
+    "Terraform",
+    "Docker",
+    "Kubernetes",
+    "Linux",
+    "Networking",
+    "Monitoring"
+  ],
+
+  "Mobile App Developer": [
+    "Flutter",
+    "Dart",
+    "React Native",
+    "Java",
+    "Kotlin",
+    "APIs",
+    "Git",
+    "UI Widgets"
+  ],
+
+  "UI/UX Designer": [
+    "Figma",
+    "Wireframes",
+    "Prototyping",
+    "User Research",
+    "Visual Design",
+    "Design Systems"
+  ]
 }

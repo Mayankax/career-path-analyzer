@@ -1,32 +1,63 @@
 import { Router } from "express";
-import rolesData from "../data/roles.json" with { type: "json" };
+import rawRolesData from "../data/roles.json" with { type: "json" };
 
 type RolesDataType = Record<string, string[]>;
 
-const typedRolesData = rolesData as RolesDataType;
+// Cast JSON so TS knows its structure
+const rolesData: RolesDataType = rawRolesData;
 
 const router = Router();
+
+// Convert keys to lowercase for flexible matching
+const normalizedRoles: RolesDataType = {};
+for (const role of Object.keys(rolesData)) {
+  const value = rolesData[role];
+  if (Array.isArray(value)) {
+    normalizedRoles[role.toLowerCase()] = value;
+  }
+}
+
+// Normalize a skill string
+const normalize = (skill: string) => skill.trim().toLowerCase();
 
 router.post("/", (req, res) => {
   const { targetRole, currentSkills } = req.body;
 
-  const requiredSkills = typedRolesData[targetRole] || [];
+  if (!targetRole || !currentSkills) {
+    return res
+      .status(400)
+      .json({ error: "targetRole and currentSkills are required." });
+  }
 
-  const matched = currentSkills.filter((s: string) =>
-    requiredSkills.includes(s)
+  const roleKey = normalize(targetRole);
+  const requiredSkills = normalizedRoles[roleKey] || [];
+
+  const normalizedUserSkills = currentSkills.map(normalize);
+
+  // Matched skills
+  const matchedSkills = requiredSkills.filter((skill) =>
+    normalizedUserSkills.includes(normalize(skill))
   );
 
-  const missing = requiredSkills.filter(
-    (s: string) => !currentSkills.includes(s)
+  // Missing skills
+  const missingSkills = requiredSkills.filter(
+    (skill) => !normalizedUserSkills.includes(normalize(skill))
   );
+
+  // Recommendations
+  const recommendations = missingSkills.map(
+    (skill) => `Learn ${skill} and build a mini-project using it.`
+  );
+
+  // Suggested learning order: missing skills first
+  const suggestedLearningOrder = [...missingSkills, ...matchedSkills];
 
   res.json({
     targetRole,
-    matchedSkills: matched,
-    missingSkills: missing,
-    recommendations: missing.map(
-      (skill) => `Learn ${skill} and build a small project.`
-    ),
+    matchedSkills,
+    missingSkills,
+    recommendations,
+    suggestedLearningOrder,
   });
 });
 
